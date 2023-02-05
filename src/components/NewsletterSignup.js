@@ -1,16 +1,21 @@
-import classes from "./NewsletterSignup.module.css";
+import NewsletterSignup from "../components/NewsletterSignup";
+import PageContent from "../components/PageContent";
 
-function NewsletterSignup() {
+function NewsletterPage() {
   return (
-    <form method="post" className={classes.newsletter}>
-      <input
-        type="email"
-        placeholder="Sign up for newsletter..."
-        aria-label="Sign up for newsletter"
-      />
-      <button>Sign up</button>
-    </form>
+    <PageContent title="Join our awesome newsletter!">
+      <NewsletterSignup />
+    </PageContent>
   );
 }
 
-export default NewsletterSignup;
+export default NewsletterPage;
+
+export async function action({ request }) {
+  const data = await request.formData();
+  const email = data.get("email");
+
+  // send to backend newsletter server ...
+  console.log(email);
+  return { message: "Signup successful!" };
+}
