@@ -1,16 +1,23 @@
-import { Form, useNavigate, useNavigation, useActionData, json, redirect } from "react-router-dom";
+import {
+  Form,
+  useNavigate,
+  useNavigation,
+  useActionData,
+  json,
+  redirect
+} from 'react-router-dom';
 
-import classes from "./EventForm.module.css";
+import classes from './EventForm.module.css';
 
 function EventForm({ method, event }) {
   const data = useActionData();
   const navigate = useNavigate();
   const navigation = useNavigation();
 
-  const isSubmitting = navigation.state === "submitting";
+  const isSubmitting = navigation.state === 'submitting';
 
   function cancelHandler() {
-    navigate("..");
+    navigate('..');
   }
 
   return (
@@ -29,7 +36,7 @@ function EventForm({ method, event }) {
           type="text"
           name="title"
           required
-          defaultValue={event ? event.title : ""}
+          defaultValue={event ? event.title : ''}
         />
       </p>
       <p>
@@ -39,12 +46,18 @@ function EventForm({ method, event }) {
           type="url"
           name="image"
           required
-          defaultValue={event ? event.image : ""}
+          defaultValue={event ? event.image : ''}
         />
       </p>
       <p>
         <label htmlFor="date">Date</label>
-        <input id="date" type="date" name="date" required defaultValue={event ? event.date : ""} />
+        <input
+          id="date"
+          type="date"
+          name="date"
+          required
+          defaultValue={event ? event.date : ''}
+        />
       </p>
       <p>
         <label htmlFor="description">Description</label>
@@ -53,14 +66,16 @@ function EventForm({ method, event }) {
           name="description"
           rows="5"
           required
-          defaultValue={event ? event.description : ""}
+          defaultValue={event ? event.description : ''}
         />
       </p>
       <div className={classes.actions}>
         <button type="button" onClick={cancelHandler} disabled={isSubmitting}>
           Cancel
         </button>
-        <button disabled={isSubmitting}>{isSubmitting ? "Submitting..." : "Save"}</button>
+        <button disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Save'}
+        </button>
       </div>
     </Form>
   );
@@ -73,23 +88,23 @@ export async function action({ request, params }) {
   const data = await request.formData();
 
   const eventData = {
-    title: data.get("title"),
-    image: data.get("image"),
-    date: data.get("date"),
-    description: data.get("description"),
+    title: data.get('title'),
+    image: data.get('image'),
+    date: data.get('date'),
+    description: data.get('description'),
   };
 
-  let url = "http://localhost:8080/events";
+  let url = 'http://localhost:8080/events';
 
-  if (method === "PATCH") {
+  if (method === 'PATCH') {
     const eventId = params.eventId;
-    url = "http://localhost:8080/events/" + eventId;
+    url = 'http://localhost:8080/events/' + eventId;
   }
 
   const response = await fetch(url, {
     method: method,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(eventData),
   });
@@ -99,8 +114,8 @@ export async function action({ request, params }) {
   }
 
   if (!response.ok) {
-    throw json({ message: "Could not save event." }, { status: 500 });
+    throw json({ message: 'Could not save event.' }, { status: 500 });
   }
 
-  return redirect("/events");
+  return redirect('/events');
 }

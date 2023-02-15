@@ -1,21 +1,28 @@
-import NewsletterSignup from "../components/NewsletterSignup";
-import PageContent from "../components/PageContent";
+import { useEffect } from "react";
+import { useFetcher } from "react-router-dom";
 
-function NewsletterPage() {
+import classes from "./NewsletterSignup.module.css";
+
+function NewsletterSignup() {
+  const fetcher = useFetcher();
+  const { data, state } = fetcher;
+
+  useEffect(() => {
+    if (state === "idle" && data && data.message) {
+      window.alert(data.message);
+    }
+  }, [data, state]);
+
   return (
-    <PageContent title="Join our awesome newsletter!">
-      <NewsletterSignup />
-    </PageContent>
+    <fetcher.Form method="post" action="/newsletter" className={classes.newsletter}>
+      <input
+        type="email"
+        placeholder="Sign up for newsletter..."
+        aria-label="Sign up for newsletter"
+      />
+      <button>Sign up</button>
+    </fetcher.Form>
   );
 }
 
-export default NewsletterPage;
-
-export async function action({ request }) {
-  const data = await request.formData();
-  const email = data.get("email");
-
-  // send to backend newsletter server ...
-  console.log(email);
-  return { message: "Signup successful!" };
-}
+export default NewsletterSignup;
